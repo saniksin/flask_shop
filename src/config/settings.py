@@ -46,7 +46,7 @@ INSTALLED_APPS = [
     'src.apps.api',
     'src.apps.product',
 
-    
+
 ]
 
 MIDDLEWARE = [
@@ -85,8 +85,10 @@ WSGI_APPLICATION = 'src.config.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'flask_shop',
+        'USER': 'flask_shop',
+        'PASSWORD': os.getenv('PSQL_PASSWORD')
     }
 }
 
