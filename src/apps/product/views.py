@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from django.views.generic import TemplateView
+from django.views.generic import TemplateView, ListView
 
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.permissions import IsAuthenticated
@@ -29,3 +29,10 @@ class CategoryViewSet(ModelViewSet):
 
 class IndexView(TemplateView):
     template_name = "index.html"
+
+
+class ProductListView(ListView):
+    template_name = "product_list.html"
+    model = Product
+    queryset = Product.objects.filter(is_active=True)
+    context_object_name = "products"

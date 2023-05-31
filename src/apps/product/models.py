@@ -15,6 +15,15 @@ class Color(models.Model):
 class Category(models.Model):
     name = models.CharField("Название", max_length=50)
     slug = models.SlugField(max_length=70)
+    parent = models.ForeignKey(
+        'self', 
+        on_delete=models.SET_NULL, 
+        null=True,
+        related_name="sub_categories",
+        blank=True
+    )
+    is_main = models.BooleanField("главная", default=False)
+
 
     class Meta:
         verbose_name = "Категория"
@@ -40,10 +49,23 @@ class Product(models.Model):
     def __str__(self):
         return f"{self.title}"
     
+    @property
+    def main_image(self):
+        images=self.images.all()
+        if images:
+            return images[0].image.url
+        return ''
+    
+    def get_other_images(self):
+        images = self.images.all()
+        if images.count() > 1:
+            return images[1:]
+        return []
+
 
 class ProductImage(models.Model):
-    product = models.ForeignKey(Product, on_delete=models.CASCADE)
-    image = models.ImageField(upload_to="product/image/")
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name="images")
+    image = models.ImageField(upload_to="product/image/") 
 
     def __str__(self):
         return f"{self.product.title}"
