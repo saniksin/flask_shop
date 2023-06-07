@@ -1,4 +1,7 @@
 from django.db import models
+from autoslug import AutoSlugField
+from src.apps.product.utils import transliterate
+
 
 class Color(models.Model):
     name = models.CharField("Название", max_length=100)
@@ -12,9 +15,19 @@ class Color(models.Model):
         return f"{self.name}"
 
 
+def get_slug_value(instance):
+    return transliterate(f"{instance.parent.name}-{instance.name}".lower())
+
+def custom_slugify(value):
+    return value.replace(" ", "-")
+
 class Category(models.Model):
     name = models.CharField("Название", max_length=50)
-    slug = models.SlugField(max_length=70)
+    slug = AutoSlugField(
+        populate_from=get_slug_value,
+        unique=True,
+        slugify=custom_slugify
+    )
     parent = models.ForeignKey(
         'self', 
         on_delete=models.SET_NULL, 
