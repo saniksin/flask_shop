@@ -1,8 +1,8 @@
 from typing import Any, Dict
 from django.db.models.query import QuerySet
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from django.views.generic import TemplateView, ListView, DetailView
-
+from django.contrib.auth.decorators import login_required
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.permissions import IsAuthenticated
 
@@ -81,3 +81,20 @@ class ProductDetailView(DetailView):
     template_name = 'product_detail.html'
     queryset = Product.objects.filter(is_active=True)
     context_object_name = "product"
+
+
+@login_required
+def add_to_favorite(request, pk):
+    product = get_object_or_404(Product, pk=pk)
+    user = request.user
+    if product not in user.favorites.all():
+        user.favorites.add(product)
+    else:
+        user.favorites.remove(product)
+
+    return render(request, "favorites.html")
+
+
+@login_required
+def favorites_detail(request):
+    return render(request, "favorites.html")

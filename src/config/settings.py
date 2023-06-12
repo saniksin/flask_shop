@@ -91,7 +91,7 @@ WSGI_APPLICATION = 'src.config.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'flask_db',
+        'NAME': 'flask_shop',
         'USER': 'flask_shop',
         'PASSWORD': os.getenv('PSQL_PASSWORD')
     }

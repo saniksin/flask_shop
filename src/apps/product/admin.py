@@ -3,12 +3,11 @@ from django import forms
 # Register your models here.
 from src.apps.product.models import Product, ProductImage, Category
 
-
 class CategoryAdminForm(forms.ModelForm):
-    patent = forms.ModelChoiceField(queryset=Category.objects.filter(is_main=True))
+    parent = forms.ModelChoiceField(queryset=Category.objects.filter(is_main=True), required=False)
 
     class Meta:
-        models = Category
+        model = Category
         fields = ["name", "parent", "is_main"]
 
 
@@ -16,9 +15,9 @@ class CategoryAdminForm(forms.ModelForm):
 class CategoryAdmin(admin.ModelAdmin):
     form = CategoryAdminForm
     list_display = [
-        "name",
+        "name", 
         "slug",
-        "is_main",
+        'is_main',
     ]
     list_filter = [
         "is_main"
@@ -26,6 +25,8 @@ class CategoryAdmin(admin.ModelAdmin):
     search_fields = [
         "name"
     ]
+    # prepopulated_fields = {"slug": ("name",)}
+
 
 
 class ProductImageInline(admin.StackedInline):
@@ -50,10 +51,11 @@ class ProductAdminForm(forms.ModelForm):
     category = CategoryChoiceField(
         queryset=Category.objects.filter(is_main=False),
         )
-    
+
     class Meta:
         model = Product
         exclude = ["created_at", "updated_at"]
+
 
 
 @admin.register(Product)
@@ -68,14 +70,12 @@ class ProductAdmin(admin.ModelAdmin):
         "created_at",
         "updated_at"
     ]
-
     list_filter = [
         "category",
         "price",
         "created_at",
         "is_active",
     ]
-    
     search_fields = [
         "title",
         "description"

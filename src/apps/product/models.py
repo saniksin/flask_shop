@@ -1,7 +1,7 @@
 from django.db import models
 from autoslug import AutoSlugField
-from src.apps.product.utils import transliterate
 
+from src.apps.product.utils import transliterate
 
 class Color(models.Model):
     name = models.CharField("Название", max_length=100)
@@ -14,24 +14,24 @@ class Color(models.Model):
     def __str__(self):
         return f"{self.name}"
 
-
 def get_slug_value(instance):
+    if instance.is_main:
+        return transliterate(f"{instance.name}".lower())
     return transliterate(f"{instance.parent.name}-{instance.name}".lower())
 
-def custom_slugify(value):
-    return value.replace(" ", "-")
+def get_slugify_value(value):
+    return value.replace(' ','-') 
 
+# Create your models here.
 class Category(models.Model):
     name = models.CharField("Название", max_length=50)
-    slug = AutoSlugField(
-        populate_from=get_slug_value,
-        unique=True,
-        slugify=custom_slugify
-    )
+    slug = AutoSlugField(populate_from=get_slug_value,
+                         unique=True,
+                         slugify=get_slugify_value)
     parent = models.ForeignKey(
-        'self', 
+        'self',
         on_delete=models.SET_NULL, 
-        null=True,
+        null=True, 
         related_name="sub_categories",
         blank=True
     )
@@ -41,9 +41,9 @@ class Category(models.Model):
     class Meta:
         verbose_name = "Категория"
         verbose_name_plural = "Категории"
-
+        
     def __str__(self):
-        return f'{self.name}'
+        return f"{self.name}"
     
 
 class Product(models.Model):
@@ -58,6 +58,7 @@ class Product(models.Model):
     class Meta:
         verbose_name = "Товар"
         verbose_name_plural = "Товары"
+    
 
     def __str__(self):
         return f"{self.title}"
@@ -74,12 +75,11 @@ class Product(models.Model):
         if images.count() > 1:
             return images[1:]
         return []
-
+    
 
 class ProductImage(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name="images")
-    image = models.ImageField(upload_to="product/image/") 
+    image = models.ImageField(upload_to="product/images/")
 
     def __str__(self):
         return f"{self.product.title}"
-    

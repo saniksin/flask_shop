@@ -72,7 +72,7 @@ class UserUpdateAPIView(generics.UpdateAPIView):
 
 class AddFavoriteProduct(APIView):
 
-    permission_classes = [IsAuthenticated]
+    permission_classes = []
 
     def get(self, request, *args, **kwargs):
         product_id = kwargs.get("pk")
@@ -92,7 +92,7 @@ class AddFavoriteProduct(APIView):
 
 class RemoveFavoriteProduct(APIView):
 
-    permission_classes = [IsAuthenticated]
+    permission_classes = []
 
     def get(self, request, *args, **kwargs):
         product_id = kwargs.get("pk")
