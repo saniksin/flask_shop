@@ -12,7 +12,7 @@ router.register("category", views.CategoryViewSet, basename="category")
 
 
 urlpatterns = [
-    path('', views.IndexView.as_view()),
+    path('', views.IndexView.as_view(), name="index"),
     path('product/list/', views.ProductListView.as_view(), name="product_list"),
 
     path('product/add/favorite/<int:pk>/', views.add_to_favorite, name="add_favorite"),
